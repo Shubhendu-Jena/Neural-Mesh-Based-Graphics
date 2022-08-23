@@ -1,1 +1,1 @@
-# NMBG
+# Neural Mesh-Based Graphics
