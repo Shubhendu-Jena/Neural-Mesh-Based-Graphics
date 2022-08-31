@@ -1,0 +1,3 @@
+datasets:
+    "scene_Truck":
+        target_path: /data/ibr3d_tat/training/Truck/dense/ibr3d_pw_0.50

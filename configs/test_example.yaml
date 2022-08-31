@@ -1,0 +1,37 @@
+paths_file: configs/paths_example_test.yaml
+dataset_names: []
+
+batch_size: 1
+batch_size_val: 1
+eval_in_train: False
+
+# use_mask: True
+
+epochs: 120
+save_freq: 1
+save_dir: data/logs
+simple_name: True
+
+net_ckpt: ./data/Checkpoints_Truck/UNet_Truck_net.pth
+dcgan_ckpt: ./data/Checkpoints_Truck/DCDiscriminator_Truck_dcgan.pth
+texture_folder: ./data/Checkpoints_Truck/
+continue_epoch: 1
+
+splitter_module: nmbg.datasets.splitter.split_by_idxs
+splitter_args:
+    train_ratio: 0.9
+
+train_dataset_args:
+    keep_fov: False
+    random_zoom: [1.0, 2.0]
+    random_shift: [-1., 1.]
+    drop_points: 0.0
+    num_samples: False
+
+val_dataset_args:
+    keep_fov: False
+    drop_points: 0.0
+
+criterion_module: nmbg.criterions.vgg_loss.VGGLoss
+criterion_args:
+    partialconv: false

@@ -1,0 +1,37 @@
+paths_file: configs/paths_example_small_train.yaml
+dataset_names: []
+
+batch_size: 1
+batch_size_val: 1
+eval_in_train: False
+
+# use_mask: True
+
+epochs: 120
+save_freq: 1
+save_dir: data/logs
+simple_name: True
+
+net_ckpt: False
+dcgan_ckpt: False
+texture_folder: False
+continue_epoch: 0
+
+splitter_module: nmbg.datasets.splitter.split_by_ratio 
+splitter_args:
+    train_ratio: 0.9
+
+train_dataset_args:
+    keep_fov: False
+    random_zoom: [1.0, 2.0]
+    random_shift: [-1., 1.]
+    drop_points: 0.0
+    num_samples: False
+
+val_dataset_args:
+    keep_fov: False
+    drop_points: 0.0
+
+criterion_module: nmbg.criterions.vgg_loss.VGGLoss
+criterion_args:
+    partialconv: false

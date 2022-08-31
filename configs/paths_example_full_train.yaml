@@ -1,0 +1,35 @@
+datasets:
+    "scene_Barn":
+        target_path: /data/ibr3d_tat/training/Barn/dense/ibr3d_pw_0.50
+    "scene_Caterpillar":
+        target_path: /data/ibr3d_tat/training/Caterpillar/dense/ibr3d_pw_0.50
+    "scene_Church":
+        target_path: /data/ibr3d_tat/training/Church/dense/ibr3d_pw_0.50
+    "scene_Courthouse":
+        target_path: /data/ibr3d_tat/training/Courthouse/dense/ibr3d_pw_0.50
+    "scene_Ignatius":
+        target_path: /data/ibr3d_tat/training/Ignatius/dense/ibr3d_pw_0.50
+    "scene_Meetingroom":
+        target_path: /data/ibr3d_tat/training/Meetingroom/dense/ibr3d_pw_0.50
+    "scene_Family":
+        target_path: /data/ibr3d_tat/intermediate/Family/dense/ibr3d_pw_0.50
+    "scene_Francis":
+        target_path: /data/ibr3d_tat/intermediate/Francis/dense/ibr3d_pw_0.50
+    "scene_Horse":
+        target_path: /data/ibr3d_tat/intermediate/Horse/dense/ibr3d_pw_0.50
+    "scene_Lighthouse":
+        target_path: /data/ibr3d_tat/intermediate/Lighthouse/dense/ibr3d_pw_0.50
+    "scene_Panther":
+        target_path: /data/ibr3d_tat/intermediate/Panther/dense/ibr3d_pw_0.50
+    "scene_Auditorium":
+        target_path: /data/ibr3d_tat/advanced/Auditorium/dense/ibr3d_pw_0.50
+    "scene_Ballroom":
+        target_path: /data/ibr3d_tat/advanced/Ballroom/dense/ibr3d_pw_0.50
+    "scene_Museum":
+        target_path: /data/ibr3d_tat/advanced/Museum/dense/ibr3d_pw_0.50
+    "scene_Temple":
+        target_path: /data/ibr3d_tat/advanced/Temple/dense/ibr3d_pw_0.50
+    "scene_Courtroom":
+        target_path: /data/ibr3d_tat/advanced/Courtroom/dense/ibr3d_pw_0.50
+    "scene_Palace":
+        target_path: /data/ibr3d_tat/advanced/Palace/dense/ibr3d_pw_0.50
