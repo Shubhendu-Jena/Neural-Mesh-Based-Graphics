@@ -8,7 +8,7 @@ Run this command to install python environment using conda:
 ```
 source scripts/install_deps.sh
 ```
-Please modify the `cudatoolkit` version in the above bash script according to your system compatibilities.
+Please modify the `cudatoolkit` version in the bash script above according to your system compatibilities.
 # Data Preparation
 Download the [Tanks and Temples](http://vladlen.info/papers/tanks-and-temples.pdf) data as in [FreeViewSynthesis.](https://github.com/isl-org/FreeViewSynthesis)<br/>
 The data directory structure should follow the below hierarchy.
