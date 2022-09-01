@@ -468,7 +468,7 @@ def _load_dataset(name, paths_data, args):
 def _get_splits(paths_file, ds_name, args):
     config = get_dataset_config(paths_file, ds_name)
 
-    if args.eval:
+    if len(config['val_indices']) > 0:
         val_indices = config['val_indices']
 
     current_dir = Path().absolute()
@@ -507,7 +507,7 @@ def _get_splits(paths_file, ds_name, args):
 
     assert hasattr(args, 'splitter_module') and hasattr(args, 'splitter_args')
 
-    if args.eval:
+    if len(config['val_indices']) > 0:
         splits = args.splitter_module([view_list, target_list, mask_list, label_list, rotation_matrix_ext_list, rotation_matrix_cam_list, translation_vec_ext_list, translation_vec_cam_list], val_indices)
     else:
         splits = args.splitter_module([view_list, target_list, mask_list, label_list, rotation_matrix_ext_list, rotation_matrix_cam_list, translation_vec_ext_list, translation_vec_cam_list], **args.splitter_args)

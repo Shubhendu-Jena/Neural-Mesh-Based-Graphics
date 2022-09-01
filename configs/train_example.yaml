@@ -17,7 +17,7 @@ dcgan_ckpt: False
 texture_folder: False
 continue_epoch: 0
 
-splitter_module: nmbg.datasets.splitter.split_by_ratio 
+splitter_module: nmbg.datasets.splitter.split_by_idxs 
 splitter_args:
     train_ratio: 0.9
 
