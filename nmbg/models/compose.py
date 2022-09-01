@@ -72,7 +72,7 @@ class ModelAndLoss(nn.Module):
         cam_trans_vec = args[4]
         intrinsic_matrix = args[5]
         intrinsic_matrix_pytorch3d = args[6]
-        ray_direcions_img = args[7]
+        ray_directions_img = args[7]
         phase = args[8]
         target = args[-3]
         aug_flag = args[-2]
@@ -99,8 +99,8 @@ class ModelAndLoss(nn.Module):
         if not isinstance(intrinsic_matrix, (tuple, list)):
             intrinsic_matrix = [intrinsic_matrix]
 
-        if not isinstance(ray_direcions_img, (tuple, list)):
-            ray_direcions_img = [ray_direcions_img]
+        if not isinstance(ray_directions_img, (tuple, list)):
+            ray_directions_img = [ray_directions_img]
 
         if not isinstance(phase, (tuple, list)):
             phase = [phase]
@@ -114,7 +114,7 @@ class ModelAndLoss(nn.Module):
         if not isinstance(gan_flag, (tuple, list)):
             gan_flag_input = [gan_flag]
 
-        output, output_new, target_new = self.model(*scene_id, *ext_rot_mat, *cam_rot_mat, *ext_trans_vec, *cam_trans_vec, *intrinsic_matrix, *intrinsic_matrix_pytorch3d, ray_direcions_img, *phase, *target_input, *gan_flag_input, **kwargs)
+        output, output_new, target_new = self.model(*scene_id, *ext_rot_mat, *cam_rot_mat, *ext_trans_vec, *cam_trans_vec, *intrinsic_matrix, *intrinsic_matrix_pytorch3d, ray_directions_img, *phase, *target_input, *gan_flag_input, **kwargs)
         aug_flag = aug_flag.cpu().numpy()[0]
 
         if self.use_mask and 'mask' in kwargs and kwargs['mask'] is not None:
@@ -310,7 +310,7 @@ class NetAndTexture(nn.Module):
         out_feat_bg = out_feat_bg.view(1, indices_new1_bg.shape[0], indices_new1_bg.shape[1], 16)
         return out_feat_fg, out_feat_bg, final_mask_fg, final_mask_bg
 
-    def forward(self, scene_id, ext_rot_mat, cam_rot_mat, ext_trans_vec, cam_trans_vec, intrinsic_matrix, intrinsic_matrix_pytorch3d, ray_direcions_img, phase, target_input, gan_flag, **kwargs):
+    def forward(self, scene_id, ext_rot_mat, cam_rot_mat, ext_trans_vec, cam_trans_vec, intrinsic_matrix, intrinsic_matrix_pytorch3d, ray_directions_img, phase, target_input, gan_flag, **kwargs):
         if gan_flag == 0:
             cm = nullcontext()
         else:
@@ -351,7 +351,7 @@ class NetAndTexture(nn.Module):
                 transvecext = ext_trans_vec[j]
                 camrotmat = cam_rot_mat[j]
                 camtransvec = cam_trans_vec[j]
-                ray_directions = ray_direcions_img    
+                ray_directions = ray_directions_img    
                 point_clouds = Pointclouds(points=[verts_fg, verts_bg], features=[texture_fg, texture_bg])    
                 meshes = Meshes(verts=[verts_fg, verts_bg], faces=[faces_fg, faces_bg]) 
                 focal_length_idx = focal_length[j]   
@@ -371,7 +371,7 @@ class NetAndTexture(nn.Module):
                     mask_ex_fg = []
                     mask_ex_bg = []
                     nerf_img_ex = []
-                    vs = self.ss * self.crop_size[1] // 2 ** k, self.ss * self.crop_size[0] // 2 ** k
+                    vs = self.ss * target_input.shape[2] // 2 ** k, self.ss * target_input.shape[3] // 2 ** k
                 
                     res_i_0 = (self.crop_size[1] // 2 ** k)
                     res_i_1 = (self.crop_size[0] // 2 ** k) 

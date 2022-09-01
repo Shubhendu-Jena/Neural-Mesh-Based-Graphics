@@ -123,7 +123,7 @@ def run_epoch(pipeline, phase, epoch, args, iter_cb=None):
         for it, data in enumerate(dl):
             scene_id = to_device(data['scene_id'], device)
             aug_flag = to_device(data['augment_cams'], device)
-            ray_direcions_img = to_device(data['ray_direcions_img'], device)
+            ray_directions_img = to_device(data['ray_directions_img'], device)
             ext_rot_mat = to_device(data['ext_rot_mat'], device)
             ext_trans_vec = to_device(data['ext_trans_vec'], device)
             cam_rot_mat = to_device(data['cam_rot_mat'], device)
@@ -155,7 +155,7 @@ def run_epoch(pipeline, phase, epoch, args, iter_cb=None):
             for idx in range(run_nos):
                 gan_flag = gan_flag + 1
                 if args.merge_loss:
-                    out, loss1, generator_loss, discriminator_loss = model(scene_id, ext_rot_mat, cam_rot_mat, ext_trans_vec, cam_trans_vec, intrinsic_matrix, intrinsic_matrix_pytorch3d, ray_direcions_img, phase, target, aug_flag, gan_flag, mask=mask)
+                    out, loss1, generator_loss, discriminator_loss = model(scene_id, ext_rot_mat, cam_rot_mat, ext_trans_vec, cam_trans_vec, intrinsic_matrix, intrinsic_matrix_pytorch3d, ray_directions_img, phase, target, aug_flag, gan_flag, mask=mask)
                     loss = loss1 + generator_loss + discriminator_loss
                 else:
                     out = model(input)

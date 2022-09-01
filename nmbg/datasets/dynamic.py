@@ -207,11 +207,11 @@ class DynamicDataset:
             mask = ToTensor()(mask)
             label = ToTensor()(label)
 
-            ray_direcions_img_list = []
+            ray_directions_img_list = []
             for res in range(5):
-                ray_direcions_img = self._ray_direcions(K, ext_rot_mat, cam_rot_mat, ext_trans_vec, cam_trans_vec, height, width, res)
-                ray_direcions_img = self.target_transform(ray_direcions_img)
-                ray_direcions_img_list.append(ray_direcions_img)
+                ray_directions_img = self._ray_directions(K, ext_rot_mat, cam_rot_mat, ext_trans_vec, cam_trans_vec, height, width, res)
+                ray_directions_img = self.target_transform(ray_directions_img)
+                ray_directions_img_list.append(ray_directions_img)
 
             aug_flag = 1
         
@@ -284,11 +284,11 @@ class DynamicDataset:
             trans_vec_ext = self.translation_vec_ext_list[idx]
             trans_vec_cam = self.translation_vec_cam_list[idx]
 
-            ray_direcions_img_list = []
+            ray_directions_img_list = []
             for res in range(5):
-                ray_direcions_img = self._ray_direcions(K, rotation_matrix_ext, rotation_matrix_cam, trans_vec_ext, trans_vec_cam, height, width, res)
-                ray_direcions_img = self.target_transform(ray_direcions_img)
-                ray_direcions_img_list.append(ray_direcions_img)
+                ray_directions_img = self._ray_directions(K, rotation_matrix_ext, rotation_matrix_cam, trans_vec_ext, trans_vec_cam, height, width, res)
+                ray_directions_img = self.target_transform(ray_directions_img)
+                ray_directions_img_list.append(ray_directions_img)
             
             self.timing.add('transform', tt.toc())
             aug_flag = 0
@@ -304,7 +304,7 @@ class DynamicDataset:
                 'cam_trans_vec': cam_trans_vec,
                 'intrinsic_matrix': K,
                 'intrinsic_matrix_pytorch3d': K_pytorch3d,    
-                'ray_direcions_img': ray_direcions_img_list,
+                'ray_directions_img': ray_directions_img_list,
                 'target': target,
                 'target_filename': self.target_list[idx],
                 'mask': mask,
@@ -363,7 +363,7 @@ class DynamicDataset:
         image = cv2.warpPerspective(image, H, tuple(self.image_size))
         return image
 
-    def _ray_direcions(self, intrinsic_matrix_mod, rot_mat_ext, rot_mat_cam, trans_vec_ext, trans_vec_cam, height, width, res):
+    def _ray_directions(self, intrinsic_matrix_mod, rot_mat_ext, rot_mat_cam, trans_vec_ext, trans_vec_cam, height, width, res):
         res_factor = 2 ** res
         width = width // res_factor
         height = height // res_factor
@@ -385,15 +385,15 @@ class DynamicDataset:
         cam_u_v = np.stack((cam_u, cam_v, ones_idx), axis=-1)
         cam_u_v = np.transpose(cam_u_v)
         world_u_v = np.matmul(rot_mat_cam, cam_u_v)
-        ray_direcions = world_u_v
+        ray_directions = world_u_v
 
-        ray_direcions_norm = np.expand_dims(np.linalg.norm(ray_direcions, axis=0), axis=0)
-        ray_direcions /= ray_direcions_norm
-        ray_direcions = ray_direcions.transpose(1,0)
+        ray_directions_norm = np.expand_dims(np.linalg.norm(ray_directions, axis=0), axis=0)
+        ray_directions /= ray_directions_norm
+        ray_directions = ray_directions.transpose(1,0)
 
-        ray_direcions_img = np.ones((height, width, 3))
-        ray_direcions_img[uv_values_original[:,1], uv_values_original[:,0], :] = ray_direcions 
-        return ray_direcions_img
+        ray_directions_img = np.ones((height, width, 3))
+        ray_directions_img[uv_values_original[:,1], uv_values_original[:,0], :] = ray_directions 
+        return ray_directions_img
 
     def parse_intrinsics(self, intrinsics):
         fx = intrinsics[..., 0, :1]
