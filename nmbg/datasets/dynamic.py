@@ -121,7 +121,7 @@ class DynamicDataset:
         self.fastrand = None
         self.timing = None
         self.count = 0
-        self.sampling_rate = len(view_list)//5
+        self.sampling_rate = len(view_list)//round(0.05*len(view_list))
 
     def normalize(self, x):
         """Normalization helper function."""
