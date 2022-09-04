@@ -121,6 +121,7 @@ class DynamicDataset:
         self.fastrand = None
         self.timing = None
         self.count = 0
+        self.sampling_rate = len(view_list)//5
 
     def normalize(self, x):
         """Normalization helper function."""
@@ -152,7 +153,7 @@ class DynamicDataset:
         if self.timing is None:
             self.timing = AccumDict()
 
-        if idx % 20 == 0 and isinstance(self.theta, np.ndarray):
+        if idx % self.sampling_rate == 0 and isinstance(self.theta, np.ndarray):
             radius_rand = np.random.uniform(low=0.6*self.radius, high=self.radius, size=(1,))
             look_at_pos = self.center
             if self.theta[idx] > 0: 
