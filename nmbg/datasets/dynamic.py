@@ -154,7 +154,7 @@ class DynamicDataset:
         if self.timing is None:
             self.timing = AccumDict()
 
-        if idx % self.sampling_rate == 0 and isinstance(self.theta, np.ndarray):
+        if isinstance(self.theta, np.ndarray) and idx % self.sampling_rate == 0:
             radius_rand = np.random.uniform(low=0.6*self.radius, high=self.radius, size=(1,))
             look_at_pos = self.center
             if self.theta[idx] > 0: 
