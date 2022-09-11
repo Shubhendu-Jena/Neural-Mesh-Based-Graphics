@@ -19,8 +19,8 @@ import os
 
 TextureOptimizerClass = optim.RMSprop
 
-def get_discriminator():
-    dcgan = DCDiscriminator()
+def get_discriminator(img_size):
+    dcgan = DCDiscriminator(img_size=img_size)
 
     return dcgan
 
@@ -79,7 +79,7 @@ class TexturePipeline(Pipeline):
             args.input_channels = [2*8] * args.num_mipmap
 
         net = get_net(args.input_channels, args)
-        dcgan = get_discriminator()
+        dcgan = get_discriminator(img_size=256) #get_discriminator(img_size=512) for single scene trainings
 
         textures_fg = {}
         textures_bg = {}

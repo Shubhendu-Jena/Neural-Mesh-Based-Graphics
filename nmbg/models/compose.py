@@ -193,7 +193,7 @@ class GaussianLayer(nn.Module):
         return GaussianLayer._instance
 
 class NetAndTexture(nn.Module):
-    def __init__(self, net, dcgan, textures_fg, textures_bg, point_clouds_fg, point_clouds_bg, faces_fg, faces_bg, supersampling=1, crop_size=(512,512), temporal_average=False):
+    def __init__(self, net, dcgan, textures_fg, textures_bg, point_clouds_fg, point_clouds_bg, faces_fg, faces_bg, supersampling=1, crop_size=(512,512)):
         super().__init__()
         
         self.net = net
@@ -211,8 +211,6 @@ class NetAndTexture(nn.Module):
         self._faces_bg = {k: v for k, v in faces_bg.items()}
         self._loaded_textures = []
 
-        self.last_input = None
-        self.temporal_average = temporal_average
         self.crop_size = crop_size
         self.sh_deg = 2
 
@@ -253,7 +251,6 @@ class NetAndTexture(nn.Module):
         return K
 
     def renderer(self, rasterizer1, rasterizer2, point_clouds, mesh, ray_directions, camtransvec, res):
-        raw2alpha = lambda raw, dists, act_fn=F.relu: 1.-torch.exp(-act_fn(torch.abs(raw))*dists)
         fragments1 = rasterizer1(point_clouds)
         fragments2 = rasterizer2(mesh)
         verts_colors = point_clouds.features_packed()
@@ -319,9 +316,6 @@ class NetAndTexture(nn.Module):
             out = []
             mask_fg = []
             mask_bg = []
-            nerf_img_output = []
-            up_16 = []
-            in_16 = []
 
             batch_size = ext_rot_mat.shape[0]
             scene_ids = scene_id['id']
@@ -363,18 +357,13 @@ class NetAndTexture(nn.Module):
                 input_multiscale_bg = []
                 mask_multiscale_fg = []
                 mask_multiscale_bg = []
-                nerf_img_multiscale = []
                 for k in range(5):
-                    tex_sample = None
                     input_ex_fg = []
                     input_ex_bg = []
                     mask_ex_fg = []
                     mask_ex_bg = []
-                    nerf_img_ex = []
                     vs = self.ss * target_input.shape[2] // 2 ** k, self.ss * target_input.shape[3] // 2 ** k
-                
-                    res_i_0 = (self.crop_size[1] // 2 ** k)
-                    res_i_1 = (self.crop_size[0] // 2 ** k) 
+                 
                     mx = j - 1
                     ray_directions_res = ray_directions[k][mx]
 
@@ -443,12 +432,6 @@ class NetAndTexture(nn.Module):
                     input_multiscale_bg.append(input_bg_cat)
                     mask_multiscale_fg.append(mask_fg_cat)
                     mask_multiscale_bg.append(mask_bg_cat)
-
-                if self.temporal_average:
-                    if self.last_input is not None:
-                        for i in range(len(input_multiscale)):
-                            input_multiscale[i] = (input_multiscale[i] + self.last_input[i]) / 2
-                    self.last_input = list(input_multiscale)
                     
                 input_multiscale_all = input_multiscale_fg + input_multiscale_bg
                 out1 = self.net(*input_multiscale_all, **kwargs)
@@ -456,14 +439,11 @@ class NetAndTexture(nn.Module):
 
             out = torch.cat(out, 0)
 
-        out_new = F.interpolate(out, (256, 256), mode='bilinear')
-        target_new = F.interpolate(target_input, (256, 256), mode='bilinear') 
+        out_new = F.interpolate(out, (256, 256), mode='bilinear') #(512, 512) for single scene trainings
+        target_new = F.interpolate(target_input, (256, 256), mode='bilinear') #(512, 512) for single scene trainings
         out_new.requires_grad_()
         target_new.requires_grad_()
         out_new = self.dcgan(out_new)
         target_new = self.dcgan(target_new)
 
-        if kwargs.get('return_input'):
-            return out, out_new, target_new, input_multiscale
-        else:
-            return out, out_new, target_new
+        return out, out_new, target_new
