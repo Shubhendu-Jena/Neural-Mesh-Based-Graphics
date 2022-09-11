@@ -122,7 +122,7 @@ class DynamicDataset:
         self.timing = None
         self.count = 0
         if isinstance(self.theta, np.ndarray):
-            self.sampling_rate = len(view_list)//round(0.02*len(view_list))
+            self.sampling_rate = len(view_list)//round(0.02*len(view_list)) #np.inf for single scene trainings
 
     def normalize(self, x):
         """Normalization helper function."""
